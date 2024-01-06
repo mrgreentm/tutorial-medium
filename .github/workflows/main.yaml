@@ -30,10 +30,7 @@ jobs:
       run: npm run build
 
     - name: Configurando AWS CLI
-      run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && \
-           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && \
-           aws configure set default.region $AWS_DEFAULT_REGION
+      run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && aws configure set default.region $AWS_DEFAULT_REGION
 
     - name: Realizando upload do bundle da aplicação no S3
-      run: AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-           AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION aws s3 sync dist/ s3://jacinto-software-deploy-s3/
+      run: AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION aws s3 sync dist/ s3://jacinto-software-deploy-s3/
