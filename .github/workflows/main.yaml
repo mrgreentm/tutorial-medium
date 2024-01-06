@@ -1,0 +1,39 @@
+name: CI/CD para Angular no S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: "us-east-1"  # Substitua com a região AWS onde está o seu bucket s3
+
+    steps:
+    - name: Checkout do repositório
+      uses: actions/checkout@v2
+
+    - name: Configurando o NodeJS
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Instalando as dependências do nosso projeto
+      run: npm install
+
+    - name: Buildando nosso projeto
+      run: npm run build
+
+    - name: Configurando AWS CLI
+      run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && \
+           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && \
+           aws configure set default.region $AWS_DEFAULT_REGION
+
+    - name: Realizando upload do bundle da aplicação no S3
+      run: AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+           AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION aws s3 sync dist/ s3://jacinto-software-deploy-s3/
